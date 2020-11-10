@@ -1,22 +1,18 @@
 Dado("que o usuário está na home do site.") do
-  visit "https://www.icarros.com.br/principal/index.jsp"
+  @busca = BuscaPage.new
+  @busca.acessar_url("https://www.icarros.com.br/principal/index.jsp")
 end
 
 Quando("efetuar uma busca por um carro usado de mesmo modelo e marca") do
-  find("#anunciosNovos").click
-  find("button[title=Marca]").click
-  campos_busca = all(".bs-searchbox")
-  campos_busca[0].find("input[aria-label=Search]").send_keys "Chevrolet"
-  campos_busca[0].find("input[aria-label=Search]").send_keys :enter
-  campos_busca = all(".bs-searchbox")
-  campos_busca[0].find("input[aria-label=Search]").send_keys "Agile"
-  campos_busca[0].find("input[aria-label=Search]").send_keys :enter
-  click_button "Buscar"
+  @busca.usados.click
+  @busca.marca.click
+  @busca.selecionar_marca("Chevrolet")
+  @busca.selecionar_modelo("Agile")
+  @busca.buscar
 end
 
 Então("os resultados devem ser exibidos.") do
-  qtde_resultados = find(".sticky_conteudo")
-  expect(qtde_resultados).to have_content "(14 ofertas)"
+  expect(@busca.resultado_busca).to have_content "(14 ofertas)"
 end
 
 Então("o valor do primeiro carro da listagem deve ser verificado") do
